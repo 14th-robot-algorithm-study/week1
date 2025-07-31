@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+	int n, m, k;
+	cin >> n >> m >> k;
+
+	vector<vector<char>> field(n, vector<char>(m));
+
+	// 상 하 좌 우
+	// -> 오염되어선 안된다
+	int dy[4] = { -1, 1, 0, 0 };
+	int dx[4] = { 0, 0, -1, 1 };
+
+	// 입력받기
+	for (int i = 0; i < n; i++) {
+		string row;
+		cin >> row;
+		for (int j = 0; j < m; j++) {
+			field[i][j] = row[j];
+		}
+	}
+
+	// 폭탄 로직
+	for (int i = 0; i < field.size(); i++) {
+		for (int j = 0; j < field[0].size(); j++) {
+			// 값이 폭탄인 필드
+			if (field[i][j] == '@') {
+				field[i][j] = '%';
+				for (int r = 1; r <= k; r++) {
+					for (int d = 0; d < 4; d++) { // 상하좌우 방향
+						int ny = i + dy[d] * r;
+						int nx = j + dx[d] * r;
+
+						if (ny < 0 || nx < 0 || ny >= n || nx >= m) continue;
+						if (field[ny][nx] == '#') break;
+
+						field[ny][nx] = '%';
+					}
+				}
+			}
+			else continue;
+		}
+	}
+
+	//cout << '\n'; // 디버깅용
+
+	// 출력
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			cout << field[i][j];
+		}
+		cout << '\n';
+	}
+
+	return 0;
+}
